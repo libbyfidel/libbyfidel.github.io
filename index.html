@@ -3,20 +3,726 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Your Name</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>Libby Fidel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Space+Mono:ital@0;1&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --cream: #f7f3ec;
+      --cream-dark: #ede7db;
+      --green-soft: #b8cba8;
+      --green-mid: #7a9e6a;
+      --green-deep: #3a5c2e;
+      --text-dark: #1e2a1a;
+      --text-mid: #4a6040;
+      --text-light: #8aaa78;
+      --stripe1: rgba(180, 210, 160, 0.18);
+      --stripe2: rgba(160, 195, 140, 0.10);
+      --el-orange: #e8380a;
+      --el-pink: #f472b6;
+      --el-purple: #c084fc;
+      --el-blue: #60a5fa;
+      --el-green: #4ade80;
+      --el-cream: #fff0e8;
+      --el-text: #fff0e8;
+      --el-muted: #ffb89a;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--text-dark);
+      transition: background 0.7s ease, color 0.7s ease;
+      overflow-x: hidden;
+    }
+
+    body.el-mode {
+      background: var(--el-orange);
+      color: var(--el-text);
+    }
+
+    /* ── STRIPE BACKGROUND ── */
+    .stripe-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      transition: opacity 0.7s ease;
+    }
+
+    .stripe-bg svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    body.el-mode .stripe-bg { opacity: 0; }
+
+    /* ── GIF BACKGROUND (El Fidel) ── */
+    .gif-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.7s ease;
+      background-image: url('IMG_5418.GIF');
+      background-size: cover;
+      background-position: center;
+    }
+
+    body.el-mode .gif-bg { opacity: 1; }
+
+    /* ── SITE WRAPPER ── */
+    .site {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── NAV ── */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.6rem 3rem;
+      border-bottom: 1px solid rgba(120,160,90,0.25);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      background: rgba(247, 243, 236, 0.88);
+      transition: background 0.7s, border-color 0.7s;
+    }
+
+    body.el-mode nav {
+      background: rgba(232, 56, 10, 0.75);
+      border-bottom-color: rgba(255,180,120,0.3);
+    }
+
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      color: var(--green-deep);
+      transition: color 0.7s;
+      text-decoration: none;
+    }
+
+    body.el-mode .nav-logo { color: var(--el-cream); }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 2.5rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--text-mid);
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover { color: var(--green-deep); }
+    body.el-mode .nav-links a { color: var(--el-muted); }
+    body.el-mode .nav-links a:hover { color: var(--el-cream); }
+
+    .toggle-btn {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      padding: 7px 16px;
+      border-radius: 30px;
+      border: 1px solid var(--green-mid);
+      background: transparent;
+      color: var(--green-deep);
+      cursor: pointer;
+      letter-spacing: 0.05em;
+      transition: all 0.3s;
+      white-space: nowrap;
+    }
+
+    .toggle-btn:hover {
+      background: var(--green-deep);
+      color: var(--cream);
+    }
+
+    body.el-mode .toggle-btn {
+      border-color: rgba(255,200,150,0.6);
+      color: var(--el-cream);
+    }
+
+    body.el-mode .toggle-btn:hover {
+      background: rgba(255,200,150,0.2);
+    }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 88vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 6rem 3rem 4rem;
+      max-width: 900px;
+    }
+
+    .hero-eyebrow {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-light);
+      margin-bottom: 2rem;
+      transition: color 0.7s;
+    }
+
+    body.el-mode .hero-eyebrow { color: var(--el-muted); }
+
+    .hero-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(72px, 11vw, 140px);
+      font-weight: 300;
+      line-height: 0.92;
+      letter-spacing: -0.02em;
+      color: var(--green-deep);
+      margin-bottom: 2.5rem;
+      transition: color 0.7s;
+    }
+
+    body.el-mode .hero-name {
+      color: var(--el-cream);
+      text-shadow: 2px 2px 0px rgba(0,0,0,0.3);
+    }
+
+    .hero-sub {
+      font-size: 17px;
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--text-mid);
+      max-width: 480px;
+      margin-bottom: 3rem;
+      transition: color 0.7s;
+    }
+
+    body.el-mode .hero-sub { color: var(--el-muted); }
+
+    .hero-ctas {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 12px 28px;
+      background: var(--green-deep);
+      color: var(--cream);
+      border: none;
+      border-radius: 2px;
+      cursor: pointer;
+      letter-spacing: 0.04em;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.3s;
+    }
+
+    .btn-primary:hover { background: var(--text-dark); }
+
+    body.el-mode .btn-primary {
+      background: rgba(10,5,0,0.7);
+      color: var(--el-cream);
+    }
+
+    body.el-mode .btn-primary:hover {
+      background: rgba(0,0,0,0.9);
+    }
+
+    .btn-secondary {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 400;
+      padding: 12px 28px;
+      background: transparent;
+      color: var(--green-deep);
+      border: 1px solid var(--green-soft);
+      border-radius: 2px;
+      cursor: pointer;
+      letter-spacing: 0.04em;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.3s;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--green-deep);
+    }
+
+    body.el-mode .btn-secondary {
+      color: var(--el-cream);
+      border-color: rgba(255,200,150,0.5);
+    }
+
+    /* ── DIVIDER ── */
+    .section-divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--green-soft), transparent);
+      margin: 0 3rem;
+      width: calc(100% - 6rem);
+      transition: opacity 0.7s;
+    }
+
+    body.el-mode .section-divider { opacity: 0.3; background: linear-gradient(90deg, transparent, #ffb89a, transparent); }
+
+    /* ── INFO CARDS ── */
+    .info-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      margin: 4rem 3rem;
+      border: 1px solid rgba(120,160,90,0.2);
+      border-radius: 4px;
+      overflow: hidden;
+      background: rgba(255,255,255,0.4);
+      backdrop-filter: blur(8px);
+      transition: border-color 0.7s, background 0.7s;
+    }
+
+    body.el-mode .info-cards {
+      background: rgba(0,0,0,0.25);
+      border-color: rgba(255,130,60,0.3);
+    }
+
+    .info-card {
+      padding: 1.5rem 2rem;
+      border-right: 1px solid rgba(120,160,90,0.2);
+      transition: border-color 0.7s;
+    }
+
+    body.el-mode .info-card { border-right-color: rgba(255,130,60,0.2); }
+    .info-card:last-child { border-right: none; }
+
+    .info-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-light);
+      margin-bottom: 0.5rem;
+      transition: color 0.7s;
+    }
+
+    body.el-mode .info-label { color: var(--el-muted); opacity: 0.7; }
+
+    .info-value {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      font-weight: 400;
+      color: var(--text-dark);
+      transition: color 0.7s;
+    }
+
+    body.el-mode .info-value { color: var(--el-cream); }
+
+    /* ── BLOG SECTION (Libby only) ── */
+    .blog-section {
+      padding: 2rem 3rem 6rem;
+      transition: opacity 0.5s, max-height 0.5s;
+      overflow: hidden;
+    }
+
+    body.el-mode .blog-section {
+      opacity: 0;
+      pointer-events: none;
+      max-height: 0;
+      padding: 0 3rem;
+    }
+
+    .blog-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 3rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(120,160,90,0.2);
+    }
+
+    .blog-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-light);
+    }
+
+    .blog-subtitle {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      color: var(--text-light);
+      opacity: 0.7;
+    }
+
+    .posts {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .post {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 2rem;
+      padding: 2.5rem 0;
+      border-bottom: 1px solid rgba(120,160,90,0.15);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .post:hover .post-title { color: var(--green-deep); }
+    .post:first-child { border-top: none; }
+
+    .post-date {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      color: var(--text-light);
+      letter-spacing: 0.06em;
+      padding-top: 6px;
+    }
+
+    .post-tag {
+      display: inline-block;
+      font-family: 'Space Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--green-mid);
+      background: rgba(120,160,90,0.12);
+      padding: 3px 8px;
+      border-radius: 20px;
+      margin-bottom: 0.6rem;
+    }
+
+    .post-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px;
+      font-weight: 400;
+      line-height: 1.2;
+      color: var(--text-dark);
+      margin-bottom: 0.6rem;
+      transition: color 0.2s;
+    }
+
+    .post-excerpt {
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.7;
+      color: var(--text-mid);
+      max-width: 560px;
+    }
+
+    /* ── EL FIDEL CONTENT ── */
+    .el-section {
+      padding: 2rem 3rem 6rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+    }
+
+    body.el-mode .el-section {
+      opacity: 1;
+      pointer-events: all;
+      position: relative;
+    }
+
+    .el-tagline {
+      font-family: 'Space Mono', monospace;
+      font-size: 13px;
+      color: var(--el-muted);
+      letter-spacing: 0.08em;
+      text-align: center;
+      padding: 3rem 0 5rem;
+      font-style: italic;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 2rem 3rem;
+      border-top: 1px solid rgba(120,160,90,0.15);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: border-color 0.7s;
+    }
+
+    body.el-mode footer {
+      border-top-color: rgba(255,130,60,0.2);
+    }
+
+    .footer-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 14px;
+      font-weight: 300;
+      color: var(--text-light);
+      transition: color 0.7s;
+    }
+
+    body.el-mode .footer-name { color: var(--el-muted); }
+
+    .footer-copy {
+      font-family: 'Space Mono', monospace;
+      font-size: 9px;
+      color: var(--text-light);
+      opacity: 0.6;
+      transition: color 0.7s;
+    }
+
+    body.el-mode .footer-copy { color: var(--el-muted); }
+
+    /* ── BELOW-FOLD WRAPPER ── */
+    .below-fold {
+      position: relative;
+      min-height: 400px;
+    }
+
+    @media (max-width: 768px) {
+      nav { padding: 1.2rem 1.5rem; }
+      .nav-links { display: none; }
+      .hero { padding: 4rem 1.5rem 3rem; }
+      .hero-name { font-size: 64px; }
+      .info-cards { grid-template-columns: 1fr; margin: 2rem 1.5rem; }
+      .info-card { border-right: none; border-bottom: 1px solid rgba(120,160,90,0.2); }
+      .blog-section { padding: 2rem 1.5rem 4rem; }
+      .post { grid-template-columns: 1fr; gap: 0.5rem; }
+      footer { padding: 1.5rem; flex-direction: column; gap: 0.5rem; text-align: center; }
+    }
+  </style>
 </head>
 <body>
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="about.html">About</a>
-    <a href="projects.html">Projects</a>
-    <a href="contact.html">Contact</a>
-  </nav>
 
-  <main>
-    <h1>Hi, I'm [Your Name] 👋</h1>
-    <p>Welcome to my personal website.</p>
-  </main>
+  <!-- Stripe background (Libby) -->
+  <div class="stripe-bg" aria-hidden="true">
+    <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <!-- Varying thickness horizontal stripes -->
+      <rect y="0"   width="1440" height="1"   fill="rgba(160,195,130,0.18)"/>
+      <rect y="18"  width="1440" height="2"   fill="rgba(160,195,130,0.13)"/>
+      <rect y="38"  width="1440" height="1"   fill="rgba(160,195,130,0.20)"/>
+      <rect y="52"  width="1440" height="3"   fill="rgba(160,195,130,0.09)"/>
+      <rect y="72"  width="1440" height="1"   fill="rgba(160,195,130,0.16)"/>
+      <rect y="90"  width="1440" height="2"   fill="rgba(160,195,130,0.12)"/>
+      <rect y="110" width="1440" height="1"   fill="rgba(160,195,130,0.22)"/>
+      <rect y="126" width="1440" height="4"   fill="rgba(160,195,130,0.07)"/>
+      <rect y="148" width="1440" height="1"   fill="rgba(160,195,130,0.18)"/>
+      <rect y="165" width="1440" height="2"   fill="rgba(160,195,130,0.13)"/>
+      <rect y="184" width="1440" height="1"   fill="rgba(160,195,130,0.19)"/>
+      <rect y="200" width="1440" height="3"   fill="rgba(160,195,130,0.10)"/>
+      <rect y="220" width="1440" height="1"   fill="rgba(160,195,130,0.15)"/>
+      <rect y="240" width="1440" height="2"   fill="rgba(160,195,130,0.20)"/>
+      <rect y="258" width="1440" height="1"   fill="rgba(160,195,130,0.14)"/>
+      <rect y="276" width="1440" height="3"   fill="rgba(160,195,130,0.08)"/>
+      <rect y="296" width="1440" height="1"   fill="rgba(160,195,130,0.17)"/>
+      <rect y="312" width="1440" height="2"   fill="rgba(160,195,130,0.12)"/>
+      <rect y="332" width="1440" height="1"   fill="rgba(160,195,130,0.21)"/>
+      <rect y="348" width="1440" height="4"   fill="rgba(160,195,130,0.07)"/>
+      <rect y="370" width="1440" height="1"   fill="rgba(160,195,130,0.16)"/>
+      <rect y="388" width="1440" height="2"   fill="rgba(160,195,130,0.13)"/>
+      <rect y="408" width="1440" height="1"   fill="rgba(160,195,130,0.19)"/>
+      <rect y="425" width="1440" height="3"   fill="rgba(160,195,130,0.09)"/>
+      <rect y="445" width="1440" height="1"   fill="rgba(160,195,130,0.18)"/>
+      <rect y="463" width="1440" height="2"   fill="rgba(160,195,130,0.14)"/>
+      <rect y="482" width="1440" height="1"   fill="rgba(160,195,130,0.20)"/>
+      <rect y="500" width="1440" height="3"   fill="rgba(160,195,130,0.08)"/>
+      <rect y="520" width="1440" height="1"   fill="rgba(160,195,130,0.16)"/>
+      <rect y="536" width="1440" height="2"   fill="rgba(160,195,130,0.11)"/>
+      <rect y="556" width="1440" height="1"   fill="rgba(160,195,130,0.22)"/>
+      <rect y="572" width="1440" height="4"   fill="rgba(160,195,130,0.07)"/>
+      <rect y="594" width="1440" height="1"   fill="rgba(160,195,130,0.15)"/>
+      <rect y="612" width="1440" height="2"   fill="rgba(160,195,130,0.13)"/>
+      <rect y="630" width="1440" height="1"   fill="rgba(160,195,130,0.19)"/>
+      <rect y="648" width="1440" height="3"   fill="rgba(160,195,130,0.09)"/>
+      <rect y="668" width="1440" height="1"   fill="rgba(160,195,130,0.17)"/>
+      <rect y="686" width="1440" height="2"   fill="rgba(160,195,130,0.12)"/>
+      <rect y="706" width="1440" height="1"   fill="rgba(160,195,130,0.20)"/>
+      <rect y="722" width="1440" height="3"   fill="rgba(160,195,130,0.08)"/>
+      <rect y="742" width="1440" height="1"   fill="rgba(160,195,130,0.18)"/>
+      <rect y="760" width="1440" height="2"   fill="rgba(160,195,130,0.14)"/>
+      <rect y="778" width="1440" height="1"   fill="rgba(160,195,130,0.21)"/>
+      <rect y="796" width="1440" height="4"   fill="rgba(160,195,130,0.07)"/>
+      <rect y="818" width="1440" height="1"   fill="rgba(160,195,130,0.16)"/>
+      <rect y="836" width="1440" height="2"   fill="rgba(160,195,130,0.12)"/>
+      <rect y="856" width="1440" height="1"   fill="rgba(160,195,130,0.19)"/>
+      <rect y="874" width="1440" height="3"   fill="rgba(160,195,130,0.09)"/>
+    </svg>
+  </div>
+
+  <!-- GIF background (El Fidel) -->
+  <div class="gif-bg" aria-hidden="true"></div>
+
+  <div class="site">
+    <nav>
+      <a href="#" class="nav-logo" id="nav-logo">Libby Fidel</a>
+      <div class="nav-right">
+        <ul class="nav-links" id="nav-links">
+          <li><a href="#writing">Writing</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+        <button class="toggle-btn" onclick="toggleMode()" id="toggle-btn">El Fidel →</button>
+      </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+      <p class="hero-eyebrow" id="hero-eyebrow">San Francisco, CA</p>
+      <h1 class="hero-name" id="hero-name">Libby<br>Fidel</h1>
+      <p class="hero-sub" id="hero-sub">A creative based in San Francisco with an eye for what matters and a knack for making things — ideas, words, work — come alive.</p>
+      <div class="hero-ctas">
+        <a href="#writing" class="btn-primary" id="cta-primary">Read my writing</a>
+        <a href="#contact" class="btn-secondary" id="cta-secondary">Get in touch</a>
+      </div>
+    </section>
+
+    <!-- INFO CARDS -->
+    <div class="info-cards">
+      <div class="info-card">
+        <p class="info-label">Based in</p>
+        <p class="info-value">San Francisco</p>
+      </div>
+      <div class="info-card">
+        <p class="info-label">Status</p>
+        <p class="info-value" id="card-status">Open to work</p>
+      </div>
+      <div class="info-card">
+        <p class="info-label" id="card-label3">Focus</p>
+        <p class="info-value" id="card-value3">Creative work</p>
+      </div>
+    </div>
+
+    <!-- BELOW FOLD -->
+    <div class="below-fold">
+
+      <!-- BLOG SECTION (Libby) -->
+      <section class="blog-section" id="writing">
+        <div class="blog-header">
+          <span class="blog-title">Writing</span>
+          <span class="blog-subtitle">Essays &amp; thoughts</span>
+        </div>
+        <div class="posts">
+
+          <article class="post">
+            <div class="post-date">May 2025</div>
+            <div>
+              <span class="post-tag">Essay</span>
+              <h2 class="post-title">On making things in a world that moves too fast</h2>
+              <p class="post-excerpt">There's a particular kind of exhaustion that comes not from doing too much, but from never finishing anything. I've been thinking about why we abandon projects — and what it means to actually complete something small.</p>
+            </div>
+          </article>
+
+          <article class="post">
+            <div class="post-date">Mar 2025</div>
+            <div>
+              <span class="post-tag">Reflection</span>
+              <h2 class="post-title">What San Francisco taught me about reinvention</h2>
+              <p class="post-excerpt">Every city has a mythology. SF's is that you can arrive as one person and leave — or stay — as someone entirely different. After three years here, I'm starting to understand what that actually costs.</p>
+            </div>
+          </article>
+
+          <article class="post">
+            <div class="post-date">Jan 2025</div>
+            <div>
+              <span class="post-tag">Process</span>
+              <h2 class="post-title">The strange comfort of building something no one asked for</h2>
+              <p class="post-excerpt">Side projects have a reputation as résumé padding or distraction. But I think the ones that stick — the ones you return to at 11pm for no good reason — are actually the most honest work you'll ever do.</p>
+            </div>
+          </article>
+
+        </div>
+      </section>
+
+      <!-- EL FIDEL SECTION -->
+      <section class="el-section" id="el-content">
+        <p class="el-tagline">// the other side of things //</p>
+      </section>
+
+    </div>
+
+    <footer id="site-footer">
+      <span class="footer-name" id="footer-name">Libby Fidel</span>
+      <span class="footer-copy">© 2025</span>
+    </footer>
+  </div>
+
+  <script>
+    let isEl = false;
+
+    function toggleMode() {
+      isEl = !isEl;
+      document.body.classList.toggle('el-mode', isEl);
+
+      const btn = document.getElementById('toggle-btn');
+      const logo = document.getElementById('nav-logo');
+      const eyebrow = document.getElementById('hero-eyebrow');
+      const name = document.getElementById('hero-name');
+      const sub = document.getElementById('hero-sub');
+      const ctaPrimary = document.getElementById('cta-primary');
+      const ctaSecondary = document.getElementById('cta-secondary');
+      const navLinks = document.getElementById('nav-links');
+      const footerName = document.getElementById('footer-name');
+      const cardStatus = document.getElementById('card-status');
+      const cardLabel3 = document.getElementById('card-label3');
+      const cardValue3 = document.getElementById('card-value3');
+
+      if (isEl) {
+        btn.textContent = '← Libby';
+        logo.textContent = 'El Fidel';
+        document.title = 'El Fidel';
+        eyebrow.textContent = 'the other side';
+        name.innerHTML = 'El<br>Fidel';
+        sub.textContent = 'Funky. Unfinished. Always something cooking. Welcome to the other side.';
+        ctaPrimary.textContent = 'Explore';
+        ctaPrimary.href = '#el-content';
+        ctaSecondary.textContent = 'Collab?';
+        navLinks.innerHTML = '<li><a href="#el-content">Projects</a></li><li><a href="#el-content">Sounds</a></li><li><a href="#contact">Connect</a></li>';
+        cardStatus.textContent = 'Always creating';
+        cardLabel3.textContent = 'Vibe';
+        cardValue3.textContent = 'Funky';
+        footerName.textContent = 'El Fidel';
+      } else {
+        btn.textContent = 'El Fidel →';
+        logo.textContent = 'Libby Fidel';
+        document.title = 'Libby Fidel';
+        eyebrow.textContent = 'San Francisco, CA';
+        name.innerHTML = 'Libby<br>Fidel';
+        sub.textContent = 'A creative based in San Francisco with an eye for what matters and a knack for making things — ideas, words, work — come alive.';
+        ctaPrimary.textContent = 'Read my writing';
+        ctaPrimary.href = '#writing';
+        ctaSecondary.textContent = 'Get in touch';
+        navLinks.innerHTML = '<li><a href="#writing">Writing</a></li><li><a href="#about">About</a></li><li><a href="#contact">Contact</a></li>';
+        cardStatus.textContent = 'Open to work';
+        cardLabel3.textContent = 'Focus';
+        cardValue3.textContent = 'Creative work';
+        footerName.textContent = 'Libby Fidel';
+      }
+    }
+  </script>
 </body>
 </html>
