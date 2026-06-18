@@ -1,0 +1,28 @@
+# Edit this file (or use the /admin panel) to change homepage text, contact
+# links, and theme colors without touching any HTML/CSS.
+
+location: "San Francisco, CA"
+hero_bio: "Generalist. Early-stage investor. Based in San Francisco."
+role: "VC · Early stage"
+focus: "Generalist"
+about_text: "Placeholder — tell people who you are, what you care about, and what you're working on. A few sentences is plenty."
+
+contacts:
+  - label: "Email"
+    value: "hello@libbyfidel.com"
+    url: "mailto:hello@libbyfidel.com"
+  - label: "LinkedIn"
+    value: "linkedin.com/in/libbyfidel"
+    url: "https://linkedin.com/in/libbyfidel"
+  - label: "Twitter / X"
+    value: "@libbyfidel"
+    url: "https://x.com/libbyfidel"
+
+theme:
+  cream: "#f7f3ec"
+  green_soft: "#b8cba8"
+  green_mid: "#7a9e6a"
+  green_deep: "#3a5c2e"
+  text_dark: "#1e2a1a"
+  text_mid: "#4a6040"
+  text_light: "#8aaa78"

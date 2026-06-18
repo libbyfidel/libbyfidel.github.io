@@ -1,0 +1,57 @@
+backend:
+  name: github
+  repo: libbyfidel/libbyfidel.github.io
+  branch: main
+  # This points the GitHub login flow at a free Netlify "auth-only" site.
+  # Replace with your own Netlify site URL once it's created — see setup notes.
+  base_url: https://REPLACE-ME.netlify.app
+  auth_endpoint: auth
+
+publish_mode: simple
+media_folder: "assets/images/uploads"
+public_folder: "/assets/images/uploads"
+
+collections:
+  - name: "posts"
+    label: "Writing"
+    folder: "_posts"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Publish Date", name: "date", widget: "datetime" }
+      - { label: "Tag", name: "tag", widget: "string", default: "Essay", hint: "Shown as a small pill, e.g. Essay, Reflection, Op-Ed" }
+      - { label: "Excerpt", name: "excerpt", widget: "text", hint: "2-3 sentence summary shown on the homepage list" }
+      - { label: "Credit line", name: "credit", widget: "string", required: false, hint: "Optional, e.g. 'Originally published in...' — shown below the article" }
+      - { label: "Body", name: "body", widget: "markdown" }
+
+  - name: "settings"
+    label: "Site Settings"
+    files:
+      - file: "_data/settings.yml"
+        label: "Homepage, About & Contact"
+        name: "settings"
+        fields:
+          - { label: "Eyebrow location text", name: "location", widget: "string" }
+          - { label: "Hero bio (under your name)", name: "hero_bio", widget: "string" }
+          - { label: "Role (info card)", name: "role", widget: "string" }
+          - { label: "Focus (info card)", name: "focus", widget: "string" }
+          - { label: "About section text", name: "about_text", widget: "text" }
+          - label: "Contact links"
+            name: "contacts"
+            widget: "list"
+            fields:
+              - { label: "Label", name: "label", widget: "string" }
+              - { label: "Displayed text", name: "value", widget: "string" }
+              - { label: "URL", name: "url", widget: "string" }
+          - label: "Theme colors"
+            name: "theme"
+            widget: "object"
+            fields:
+              - { label: "Background (cream)", name: "cream", widget: "color" }
+              - { label: "Accent soft", name: "green_soft", widget: "color" }
+              - { label: "Accent mid", name: "green_mid", widget: "color" }
+              - { label: "Accent deep / headline color", name: "green_deep", widget: "color" }
+              - { label: "Text dark", name: "text_dark", widget: "color" }
+              - { label: "Text mid", name: "text_mid", widget: "color" }
+              - { label: "Text light", name: "text_light", widget: "color" }

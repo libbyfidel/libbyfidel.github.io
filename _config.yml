@@ -1,0 +1,24 @@
+title: Libby Fidel
+description: Generalist. Early-stage investor. Based in San Francisco.
+url: "https://www.libbyfidel.com"
+permalink: /writing/:title/
+
+collections:
+  posts:
+    output: true
+
+defaults:
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: post
+
+markdown: kramdown
+plugins:
+  - jekyll-feed
+
+exclude:
+  - README.md
+  - Gemfile
+  - Gemfile.lock
