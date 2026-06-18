@@ -2,9 +2,9 @@ backend:
   name: github
   repo: libbyfidel/libbyfidel.github.io
   branch: main
-  # Points the GitHub login flow at a free Netlify "auth-only" site
-  # (it doesn't host any real content, just handles the OAuth handshake).
-  base_url: https://testtesttesttestls.netlify.app
+  # Points the GitHub login flow at a small self-hosted OAuth relay
+  # (github.com/libbyfidel/libbyfidel-oauth-provider, deployed on Vercel).
+  base_url: https://libbyfidel-oauth-provider.vercel.app
   auth_endpoint: auth
 
 publish_mode: simple
