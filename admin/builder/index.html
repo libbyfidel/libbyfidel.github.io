@@ -221,6 +221,11 @@ function buildFile(meta, body) {
   return `---\n${yamlStr}---\n${body}`;
 }
 
+function unwrapBody(html) {
+  const m = html.match(/^<body[^>]*>([\s\S]*)<\/body>$/);
+  return m ? m[1] : html;
+}
+
 function slugify(title) {
   return title.toLowerCase().trim()
     .replace(/[^a-z0-9\s-]/g, "")
@@ -452,7 +457,7 @@ document.getElementById("save-btn").addEventListener("click", async () => {
   setStatus("Saving…");
   try {
     currentMeta.custom_css = editor.getCss() || "";
-    const body = editor.getHtml();
+    const body = unwrapBody(editor.getHtml());
     const result = await ghPut(
       `${TABS_DIR}/${currentSlug}.md`,
       buildFile(currentMeta, body),
