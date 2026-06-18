@@ -71,6 +71,10 @@
           <li><a href="{{ '/#writing' | relative_url }}">Writing</a></li>
           <li><a href="{{ '/#about' | relative_url }}">About</a></li>
           <li><a href="{{ '/#contact' | relative_url }}">Contact</a></li>
+          {% assign sorted_tabs = site.tabs | where_exp: "t", "t.show_in_nav == true" | sort: "nav_order" %}
+          {% for t in sorted_tabs %}
+          <li><a href="{{ t.url | relative_url }}">{{ t.nav_label | default: t.title }}</a></li>
+          {% endfor %}
         </ul>
       </div>
     </nav>

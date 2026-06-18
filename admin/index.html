@@ -1,11 +1,48 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Content Manager — Libby Fidel</title>
+  <title>Site Dashboard — Libby Fidel</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f7f3ec; color: #1e2a1a;
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    }
+    .wrap { max-width: 640px; padding: 2rem; width: 100%; }
+    h1 { font-size: 28px; font-weight: 600; margin-bottom: 0.5rem; }
+    p.sub { color: #4a6040; margin-bottom: 2.5rem; }
+    .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+    a.card {
+      display: block; padding: 1.75rem; background: white; border-radius: 10px;
+      text-decoration: none; color: inherit; border: 1px solid rgba(120,160,90,0.25);
+      transition: all 0.15s;
+    }
+    a.card:hover { border-color: #3a5c2e; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.06); }
+    .card .icon { font-size: 28px; margin-bottom: 0.75rem; display: block; }
+    .card h2 { font-size: 17px; font-weight: 600; margin-bottom: 0.4rem; }
+    .card p { font-size: 13px; color: #4a6040; line-height: 1.5; }
+    @media (max-width: 600px) { .cards { grid-template-columns: 1fr; } }
+  </style>
 </head>
 <body>
-  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+  <div class="wrap">
+    <h1>Site Dashboard</h1>
+    <p class="sub">libbyfidel.com — pick a tool below.</p>
+    <div class="cards">
+      <a class="card" href="cms/">
+        <span class="icon">✍️</span>
+        <h2>Writing &amp; Settings</h2>
+        <p>Publish new posts (with optional scheduling), and edit your bio, contact links, and theme colors.</p>
+      </a>
+      <a class="card" href="builder/">
+        <span class="icon">🧱</span>
+        <h2>Page Builder</h2>
+        <p>Drag-and-drop editor for adding new tabs/pages — containers, images, galleries, buttons — no code.</p>
+      </a>
+    </div>
+  </div>
 </body>
 </html>

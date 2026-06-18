@@ -1,0 +1,532 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Page Builder — Libby Fidel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Space+Mono:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/grapesjs/dist/css/grapes.min.css">
+<link rel="stylesheet" href="https://unpkg.com/grapesjs-preset-webpage/dist/grapesjs-preset-webpage.min.css">
+<script src="https://cdn.jsdelivr.net/npm/js-yaml@4/dist/js-yaml.min.js"></script>
+<script src="https://unpkg.com/grapesjs"></script>
+<script src="https://unpkg.com/grapesjs-preset-webpage"></script>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+
+  #login-screen {
+    height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background: #f7f3ec; gap: 1rem;
+  }
+  #login-screen button {
+    font-size: 14px; padding: 12px 24px; background: #24292f; color: white;
+    border: none; border-radius: 6px; cursor: pointer;
+  }
+  #login-screen p.err { color: #b3261e; max-width: 480px; text-align: center; font-size: 13px; }
+
+  #app { height: 100%; display: none; flex-direction: column; }
+  #topbar {
+    display: flex; align-items: center; gap: 0.6rem; padding: 0.6rem 1rem;
+    background: #1e2a1a; color: white; flex-wrap: wrap; font-size: 13px;
+  }
+  #topbar a.brand { color: #b8cba8; text-decoration: none; font-weight: 600; margin-right: 0.5rem; }
+  #topbar select, #topbar input {
+    font-size: 13px; padding: 5px 8px; border-radius: 4px; border: 1px solid #4a6040; background: #2c3a26; color: white;
+  }
+  #topbar button {
+    font-size: 12px; padding: 6px 12px; border-radius: 4px; border: none; cursor: pointer;
+    background: #3a5c2e; color: white;
+  }
+  #topbar button.secondary { background: #4a4a4a; }
+  #topbar button.danger { background: #7a2e2e; }
+  #topbar button:disabled { opacity: 0.5; cursor: not-allowed; }
+  #topbar .spacer { flex: 1; }
+  #status { font-size: 12px; color: #b8cba8; min-width: 80px; }
+
+  #gjs { flex: 1; overflow: hidden; }
+  .gjs-dynamic-block { outline: 1px dashed #7a9e6a; }
+
+  #new-tab-modal, #settings-modal {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none;
+    align-items: center; justify-content: center; z-index: 1000;
+  }
+  #new-tab-modal .box, #settings-modal .box {
+    background: white; padding: 1.5rem; border-radius: 8px; width: 360px; display: flex; flex-direction: column; gap: 0.75rem;
+  }
+  #new-tab-modal label, #settings-modal label { font-size: 12px; font-weight: 600; color: #333; }
+  #new-tab-modal input, #settings-modal input { font-size: 14px; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+  #new-tab-modal .row, #settings-modal .row { display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 0.5rem; }
+  #new-tab-modal button, #settings-modal button { font-size: 13px; padding: 7px 14px; border-radius: 4px; border: none; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<div id="login-screen">
+  <h1 style="font-family:'Cormorant Garamond',serif;font-weight:400;color:#3a5c2e;">Page Builder</h1>
+  <button id="login-btn">Login with GitHub</button>
+  <p class="err" id="login-err"></p>
+</div>
+
+<div id="app">
+  <div id="topbar">
+    <a class="brand" href="../">← Dashboard</a>
+    <select id="tab-select"><option>Loading…</option></select>
+    <button id="new-tab-btn">+ New Tab</button>
+    <button id="settings-btn" class="secondary">Page Settings</button>
+    <button id="upload-img-btn" class="secondary">Upload Image</button>
+    <div class="spacer"></div>
+    <span id="status"></span>
+    <button id="save-btn">Save &amp; Publish</button>
+    <button id="delete-btn" class="danger">Delete Tab</button>
+    <button id="logout-btn" class="secondary">Logout</button>
+  </div>
+  <div id="gjs"></div>
+</div>
+
+<div id="new-tab-modal">
+  <div class="box">
+    <label>New tab title</label>
+    <input id="new-tab-title" placeholder="e.g. Portfolio" />
+    <div class="row">
+      <button id="new-tab-cancel">Cancel</button>
+      <button id="new-tab-create" style="background:#3a5c2e;color:white;">Create</button>
+    </div>
+  </div>
+</div>
+
+<div id="settings-modal">
+  <div class="box">
+    <label>Title</label>
+    <input id="set-title" />
+    <label>Nav label</label>
+    <input id="set-nav-label" />
+    <label>Nav order (lower = earlier)</label>
+    <input id="set-nav-order" type="number" />
+    <label><input id="set-show-nav" type="checkbox" style="width:auto;display:inline-block;margin-right:6px;" />Show in navigation menu</label>
+    <div class="row">
+      <button id="settings-cancel">Cancel</button>
+      <button id="settings-save" style="background:#3a5c2e;color:white;">Apply</button>
+    </div>
+  </div>
+</div>
+
+<input type="file" id="file-input" accept="image/*" style="display:none" />
+
+<script>
+const REPO = "libbyfidel/libbyfidel.github.io";
+const API = "https://api.github.com";
+const OAUTH_BASE = "https://libbyfidel-oauth-provider.vercel.app";
+const TABS_DIR = "_tabs";
+const IMAGES_DIR = "assets/images/uploads";
+
+let token = sessionStorage.getItem("gh_token") || null;
+let editor = null;
+let currentSlug = null;
+let currentSha = null;
+let currentMeta = {};
+
+function setStatus(msg) { document.getElementById("status").textContent = msg || ""; }
+
+function authenticate() {
+  const popup = window.open(
+    `${OAUTH_BASE}/auth?provider=github&scope=repo`,
+    "github-oauth",
+    "width=600,height=700"
+  );
+  function handleMessage(e) {
+    if (typeof e.data !== "string") return;
+    if (e.data === "authorizing:github") {
+      popup.postMessage("authorizing:github", e.origin);
+      return;
+    }
+    if (e.data.indexOf("authorization:github:success:") === 0) {
+      const json = e.data.slice("authorization:github:success:".length);
+      const data = JSON.parse(json);
+      window.removeEventListener("message", handleMessage);
+      token = data.token;
+      sessionStorage.setItem("gh_token", token);
+      boot();
+    } else if (e.data.indexOf("authorization:github:error:") === 0) {
+      window.removeEventListener("message", handleMessage);
+      document.getElementById("login-err").textContent = "Login failed: " + e.data;
+    }
+  }
+  window.addEventListener("message", handleMessage);
+}
+
+function ghHeaders() {
+  return { Authorization: "token " + token, Accept: "application/vnd.github+json" };
+}
+
+async function ghGet(path) {
+  const res = await fetch(`${API}/repos/${REPO}/contents/${path}`, { headers: ghHeaders() });
+  if (res.status === 404) return null;
+  if (!res.ok) throw new Error(`GET ${path} failed: ${res.status}`);
+  return res.json();
+}
+
+async function ghList(path) {
+  const res = await fetch(`${API}/repos/${REPO}/contents/${path}`, { headers: ghHeaders() });
+  if (res.status === 404) return [];
+  if (!res.ok) throw new Error(`LIST ${path} failed: ${res.status}`);
+  return res.json();
+}
+
+function b64EncodeUtf8(str) {
+  return btoa(unescape(encodeURIComponent(str)));
+}
+
+async function ghPut(path, contentStr, message, sha) {
+  const body = { message, content: b64EncodeUtf8(contentStr), branch: "main" };
+  if (sha) body.sha = sha;
+  const res = await fetch(`${API}/repos/${REPO}/contents/${path}`, {
+    method: "PUT",
+    headers: ghHeaders(),
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) throw new Error(`PUT ${path} failed: ${res.status} ${await res.text()}`);
+  return res.json();
+}
+
+async function ghPutBinary(path, base64Str, message) {
+  const res = await fetch(`${API}/repos/${REPO}/contents/${path}`, {
+    method: "PUT",
+    headers: ghHeaders(),
+    body: JSON.stringify({ message, content: base64Str, branch: "main" }),
+  });
+  if (!res.ok) throw new Error(`PUT ${path} failed: ${res.status} ${await res.text()}`);
+  return res.json();
+}
+
+async function ghDelete(path, sha, message) {
+  const res = await fetch(`${API}/repos/${REPO}/contents/${path}`, {
+    method: "DELETE",
+    headers: ghHeaders(),
+    body: JSON.stringify({ message, sha, branch: "main" }),
+  });
+  if (!res.ok) throw new Error(`DELETE ${path} failed: ${res.status}`);
+  return res.json();
+}
+
+function parseFrontMatter(raw) {
+  const m = raw.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
+  if (!m) return { meta: {}, body: raw };
+  const meta = jsyaml.load(m[1]) || {};
+  return { meta, body: m[2] };
+}
+
+function buildFile(meta, body) {
+  const yamlStr = jsyaml.dump(meta, { lineWidth: -1 });
+  return `---\n${yamlStr}---\n${body}`;
+}
+
+function slugify(title) {
+  return title.toLowerCase().trim()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-");
+}
+
+const WRITING_LIST_HTML_MOCK = `
+  <div class="blog-header"><span class="blog-title">Writing</span><span class="blog-subtitle">Essays &amp; thoughts</span></div>
+  <div class="posts">
+    <div class="post"><div class="post-date">Jan 2026</div><div><span class="post-tag">Essay</span><h2 class="post-title">Example Post Title</h2><p class="post-excerpt">Live preview placeholder — your real posts list here automatically on the published site.</p></div></div>
+  </div>`;
+const WRITING_LIST_EXPORT = [
+  '<div class="blog-header"><span class="blog-title">Writing</span><span class="blog-subtitle">Essays &amp; thoughts</span></div>',
+  '<div class="posts">',
+  '{% for post in site.posts %}',
+  '<a href="{{ post.url | relative_url }}" class="post">',
+  '<div class="post-date">{{ post.date | date: "%b %Y" }}</div>',
+  '<div><span class="post-tag">{{ post.tag | default: "Essay" }}</span><h2 class="post-title">{{ post.title }}</h2><p class="post-excerpt">{{ post.excerpt }}</p></div>',
+  '</a>',
+  '{% endfor %}',
+  '</div>',
+].join("");
+
+const CONTACT_HTML_MOCK = `
+  <p class="content-section-title">Contact</p>
+  <div class="contact-grid">
+    <div class="contact-item"><span class="contact-label">Email</span><a class="contact-value">hello@libbyfidel.com</a></div>
+  </div>`;
+const CONTACT_EXPORT = [
+  '<p class="content-section-title">Contact</p>',
+  '<div class="contact-grid">',
+  "{% for c in site.data.settings.contacts %}",
+  '<div class="contact-item"><span class="contact-label">{{ c.label }}</span><a href="{{ c.url }}" class="contact-value" target="_blank">{{ c.value }}</a></div>',
+  "{% endfor %}",
+  "</div>",
+].join("");
+
+function registerCustomBlocks(editor) {
+  editor.DomComponents.addType("writing-list", {
+    isComponent: (el) => el.getAttribute && el.getAttribute("data-gjs-type") === "writing-list",
+    model: {
+      defaults: {
+        tagName: "div",
+        attributes: { "data-gjs-type": "writing-list", class: "gjs-dynamic-block" },
+        editable: false,
+        droppable: false,
+        components: WRITING_LIST_HTML_MOCK,
+      },
+      toHTML() { return WRITING_LIST_EXPORT; },
+    },
+  });
+  editor.BlockManager.add("writing-list", {
+    label: "📝 Writing List (live)",
+    category: "Dynamic",
+    content: { type: "writing-list" },
+  });
+
+  editor.DomComponents.addType("contact-info", {
+    isComponent: (el) => el.getAttribute && el.getAttribute("data-gjs-type") === "contact-info",
+    model: {
+      defaults: {
+        tagName: "div",
+        attributes: { "data-gjs-type": "contact-info", class: "gjs-dynamic-block" },
+        editable: false,
+        droppable: false,
+        components: CONTACT_HTML_MOCK,
+      },
+      toHTML() { return CONTACT_EXPORT; },
+    },
+  });
+  editor.BlockManager.add("contact-info", {
+    label: "📇 Contact Info (live)",
+    category: "Dynamic",
+    content: { type: "contact-info" },
+  });
+
+  editor.BlockManager.add("hero-banner", {
+    label: "🦸 Hero Banner",
+    category: "Sections",
+    content: `<section style="padding:4rem 2rem;text-align:center;">
+      <p style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:#8aaa78;margin-bottom:1rem;">EYEBROW TEXT</p>
+      <h1 style="font-family:'Cormorant Garamond',serif;font-size:48px;font-weight:400;color:#3a5c2e;margin-bottom:1rem;">Big Heading Goes Here</h1>
+      <p style="font-size:17px;color:#4a6040;max-width:480px;margin:0 auto;">Supporting text — click to edit this.</p>
+    </section>`,
+  });
+
+  editor.BlockManager.add("info-cards", {
+    label: "🗂 Info Cards Row",
+    category: "Sections",
+    content: `<div style="display:flex;border:1px solid #ccc;border-radius:4px;overflow:hidden;margin:2rem 0;">
+      <div style="flex:1;padding:1.5rem;border-right:1px solid #ccc;"><p style="font-family:'Space Mono',monospace;font-size:9px;text-transform:uppercase;color:#8aaa78;">Label</p><p style="font-family:'Cormorant Garamond',serif;font-size:20px;">Value</p></div>
+      <div style="flex:1;padding:1.5rem;border-right:1px solid #ccc;"><p style="font-family:'Space Mono',monospace;font-size:9px;text-transform:uppercase;color:#8aaa78;">Label</p><p style="font-family:'Cormorant Garamond',serif;font-size:20px;">Value</p></div>
+      <div style="flex:1;padding:1.5rem;"><p style="font-family:'Space Mono',monospace;font-size:9px;text-transform:uppercase;color:#8aaa78;">Label</p><p style="font-family:'Cormorant Garamond',serif;font-size:20px;">Value</p></div>
+    </div>`,
+  });
+
+  editor.BlockManager.add("cta-banner", {
+    label: "📣 Call to Action",
+    category: "Sections",
+    content: `<div style="padding:3rem 2rem;text-align:center;background:#f0f4ec;border-radius:8px;margin:2rem 0;">
+      <h2 style="font-family:'Cormorant Garamond',serif;font-size:28px;color:#3a5c2e;margin-bottom:1rem;">Call to action heading</h2>
+      <a href="#" style="display:inline-block;padding:12px 28px;background:#3a5c2e;color:white;text-decoration:none;border-radius:2px;">Button label</a>
+    </div>`,
+  });
+
+  editor.BlockManager.add("gallery", {
+    label: "🖼 Photo Gallery",
+    category: "Sections",
+    content: `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin:2rem 0;">
+      <img src="https://placehold.co/400x300?text=Photo+1" style="width:100%;border-radius:4px;" />
+      <img src="https://placehold.co/400x300?text=Photo+2" style="width:100%;border-radius:4px;" />
+      <img src="https://placehold.co/400x300?text=Photo+3" style="width:100%;border-radius:4px;" />
+    </div>`,
+  });
+
+  editor.BlockManager.add("divider", {
+    label: "➖ Divider",
+    category: "Sections",
+    content: `<hr style="border:none;border-top:1px solid rgba(120,160,90,0.3);margin:2rem 0;" />`,
+  });
+
+  editor.BlockManager.add("spacer", {
+    label: "⬜ Spacer",
+    category: "Sections",
+    content: `<div style="height:3rem;"></div>`,
+  });
+}
+
+function initEditor() {
+  editor = grapesjs.init({
+    container: "#gjs",
+    height: "100%",
+    fromElement: false,
+    storageManager: false,
+    plugins: ["gjs-preset-webpage"],
+    pluginsOpts: { "gjs-preset-webpage": {} },
+    assetManager: { upload: false },
+    canvas: {
+      styles: [
+        "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Space+Mono:ital@0;1&display=swap",
+        "/assets/css/main.css",
+      ],
+    },
+  });
+  registerCustomBlocks(editor);
+}
+
+async function refreshTabList(selectSlug) {
+  const sel = document.getElementById("tab-select");
+  sel.innerHTML = "";
+  const items = await ghList(TABS_DIR);
+  const files = (items || []).filter((i) => i.type === "file" && i.name.endsWith(".md"));
+  if (files.length === 0) {
+    const opt = document.createElement("option");
+    opt.textContent = "(no tabs yet — create one)";
+    opt.value = "";
+    sel.appendChild(opt);
+    return;
+  }
+  files.forEach((f) => {
+    const slug = f.name.replace(/\.md$/, "");
+    const opt = document.createElement("option");
+    opt.value = slug;
+    opt.textContent = slug;
+    sel.appendChild(opt);
+  });
+  if (selectSlug) sel.value = selectSlug;
+  await loadTab(sel.value);
+}
+
+async function loadTab(slug) {
+  if (!slug) return;
+  setStatus("Loading…");
+  const file = await ghGet(`${TABS_DIR}/${slug}.md`);
+  const raw = decodeURIComponent(escape(atob(file.content.replace(/\n/g, ""))));
+  const { meta, body } = parseFrontMatter(raw);
+  currentSlug = slug;
+  currentSha = file.sha;
+  currentMeta = meta;
+  editor.setComponents(body);
+  setStatus("Loaded");
+}
+
+document.getElementById("login-btn").addEventListener("click", authenticate);
+
+document.getElementById("tab-select").addEventListener("change", (e) => loadTab(e.target.value));
+
+document.getElementById("new-tab-btn").addEventListener("click", () => {
+  document.getElementById("new-tab-title").value = "";
+  document.getElementById("new-tab-modal").style.display = "flex";
+});
+document.getElementById("new-tab-cancel").addEventListener("click", () => {
+  document.getElementById("new-tab-modal").style.display = "none";
+});
+document.getElementById("new-tab-create").addEventListener("click", async () => {
+  const title = document.getElementById("new-tab-title").value.trim();
+  if (!title) return;
+  const slug = slugify(title);
+  document.getElementById("new-tab-modal").style.display = "none";
+  setStatus("Creating…");
+  const meta = { title, nav_label: title, nav_order: 50, show_in_nav: true };
+  const body = `<section style="padding:3rem 2rem;"><h1>${title}</h1><p>Start building this page — drag blocks in from the left sidebar.</p></section>\n`;
+  await ghPut(`${TABS_DIR}/${slug}.md`, buildFile(meta, body), `Add new tab: ${title}`);
+  await refreshTabList(slug);
+  setStatus("Created");
+});
+
+document.getElementById("settings-btn").addEventListener("click", () => {
+  document.getElementById("set-title").value = currentMeta.title || "";
+  document.getElementById("set-nav-label").value = currentMeta.nav_label || "";
+  document.getElementById("set-nav-order").value = currentMeta.nav_order != null ? currentMeta.nav_order : 50;
+  document.getElementById("set-show-nav").checked = currentMeta.show_in_nav !== false;
+  document.getElementById("settings-modal").style.display = "flex";
+});
+document.getElementById("settings-cancel").addEventListener("click", () => {
+  document.getElementById("settings-modal").style.display = "none";
+});
+document.getElementById("settings-save").addEventListener("click", () => {
+  currentMeta.title = document.getElementById("set-title").value.trim();
+  currentMeta.nav_label = document.getElementById("set-nav-label").value.trim();
+  currentMeta.nav_order = parseInt(document.getElementById("set-nav-order").value, 10) || 50;
+  currentMeta.show_in_nav = document.getElementById("set-show-nav").checked;
+  document.getElementById("settings-modal").style.display = "none";
+});
+
+document.getElementById("save-btn").addEventListener("click", async () => {
+  if (!currentSlug) return;
+  setStatus("Saving…");
+  try {
+    currentMeta.custom_css = editor.getCss() || "";
+    const body = editor.getHtml();
+    const result = await ghPut(
+      `${TABS_DIR}/${currentSlug}.md`,
+      buildFile(currentMeta, body),
+      `Update tab: ${currentMeta.title || currentSlug}`,
+      currentSha
+    );
+    currentSha = result.content.sha;
+    setStatus("Saved ✓ live in ~1 min");
+  } catch (err) {
+    setStatus("");
+    alert("Save failed: " + err.message);
+  }
+});
+
+document.getElementById("delete-btn").addEventListener("click", async () => {
+  if (!currentSlug) return;
+  if (!confirm(`Delete the "${currentSlug}" tab? This can't be undone from here.`)) return;
+  setStatus("Deleting…");
+  await ghDelete(`${TABS_DIR}/${currentSlug}.md`, currentSha, `Delete tab: ${currentSlug}`);
+  currentSlug = null;
+  await refreshTabList();
+  setStatus("Deleted");
+});
+
+document.getElementById("logout-btn").addEventListener("click", () => {
+  sessionStorage.removeItem("gh_token");
+  location.reload();
+});
+
+document.getElementById("upload-img-btn").addEventListener("click", () => {
+  document.getElementById("file-input").click();
+});
+document.getElementById("file-input").addEventListener("change", async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  setStatus("Uploading image…");
+  const reader = new FileReader();
+  reader.onload = async () => {
+    const base64 = reader.result.split(",")[1];
+    const safeName = Date.now() + "-" + file.name.replace(/[^a-zA-Z0-9.\-_]/g, "");
+    try {
+      await ghPutBinary(`${IMAGES_DIR}/${safeName}`, base64, `Upload image ${safeName}`);
+      const url = `/${IMAGES_DIR}/${safeName}`;
+      const selected = editor.getSelected();
+      if (selected && selected.is("image")) {
+        selected.addAttributes({ src: url });
+      } else {
+        editor.addComponents(`<img src="${url}" style="max-width:100%;" />`);
+      }
+      setStatus("Image uploaded ✓");
+    } catch (err) {
+      setStatus("");
+      alert("Upload failed: " + err.message);
+    }
+  };
+  reader.readAsDataURL(file);
+  e.target.value = "";
+});
+
+async function boot() {
+  document.getElementById("login-screen").style.display = "none";
+  document.getElementById("app").style.display = "flex";
+  if (!editor) initEditor();
+  try {
+    await refreshTabList();
+  } catch (err) {
+    setStatus("");
+    alert("Couldn't load tabs: " + err.message + "\n\nYour login may have expired — try logging out and back in.");
+  }
+}
+
+if (token) {
+  boot();
+}
+</script>
+</body>
+</html>
