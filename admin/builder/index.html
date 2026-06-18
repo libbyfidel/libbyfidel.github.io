@@ -226,6 +226,16 @@ function unwrapBody(html) {
   return m ? m[1] : html;
 }
 
+// Dynamic blocks export plain Liquid (no DOM marker) so Jekyll can render
+// real data. That means a saved page round-tripped back into the editor
+// would otherwise show dead Liquid text instead of the live component —
+// this restores the marker + mock so GrapesJS recognizes it again.
+function rehydrateDynamicBlocks(body) {
+  return body
+    .split(WRITING_LIST_EXPORT).join(`<div data-gjs-type="writing-list">${WRITING_LIST_HTML_MOCK}</div>`)
+    .split(CONTACT_EXPORT).join(`<div data-gjs-type="contact-info">${CONTACT_HTML_MOCK}</div>`);
+}
+
 function slugify(title) {
   return title.toLowerCase().trim()
     .replace(/[^a-z0-9\s-]/g, "")
@@ -406,7 +416,7 @@ async function loadTab(slug) {
   currentSlug = slug;
   currentSha = file.sha;
   currentMeta = meta;
-  editor.setComponents(body);
+  editor.setComponents(rehydrateDynamicBlocks(body));
   setStatus("Loaded");
 }
 
