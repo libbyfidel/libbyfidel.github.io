@@ -6,6 +6,9 @@ layout: default
   <div class="article-tag"><span class="post-tag">{{ page.tag | default: "Essay" }}</span></div>
   <h1 class="article-title">{{ page.title }}</h1>
   <div class="article-date">{{ page.date | date: "%B %-d, %Y" }}</div>
+  {% if page.image %}
+  <img class="article-cover" src="{{ page.image | relative_url }}" alt="{{ page.title }}">
+  {% endif %}
   <div class="article-body">
     {{ content }}
   </div>

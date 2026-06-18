@@ -19,9 +19,11 @@ collections:
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
     fields:
       - { label: "Title", name: "title", widget: "string" }
-      - { label: "Publish Date", name: "date", widget: "datetime" }
+      - { label: "Publish Date & Time", name: "date", widget: "datetime", hint: "If this is in the future, the post stays hidden until that moment, then goes live on its own." }
+      - { label: "Save as draft (hide regardless of date)", name: "published", widget: "boolean", default: true, hint: "Turn OFF to keep this hidden no matter what — use while you're still writing." }
       - { label: "Tag", name: "tag", widget: "string", default: "Essay", hint: "Shown as a small pill, e.g. Essay, Reflection, Op-Ed" }
       - { label: "Excerpt", name: "excerpt", widget: "text", hint: "2-3 sentence summary shown on the homepage list" }
+      - { label: "Cover image", name: "image", widget: "image", required: false, hint: "Optional image shown at the top of the post" }
       - { label: "Credit line", name: "credit", widget: "string", required: false, hint: "Optional, e.g. 'Originally published in...' — shown below the article" }
       - { label: "Body", name: "body", widget: "markdown" }
 

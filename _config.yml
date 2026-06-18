@@ -3,6 +3,11 @@ description: Generalist. Early-stage investor. Based in San Francisco.
 url: "https://www.libbyfidel.com"
 permalink: /writing/:title/
 
+# Posts dated in the future stay hidden from the built site until that
+# date arrives. A scheduled GitHub Action rebuilds the site periodically
+# so scheduled posts go live on their own without a manual push.
+future: false
+
 collections:
   posts:
     output: true
