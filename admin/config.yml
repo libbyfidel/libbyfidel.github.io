@@ -2,9 +2,9 @@ backend:
   name: github
   repo: libbyfidel/libbyfidel.github.io
   branch: main
-  # This points the GitHub login flow at a free Netlify "auth-only" site.
-  # Replace with your own Netlify site URL once it's created — see setup notes.
-  base_url: https://REPLACE-ME.netlify.app
+  # Points the GitHub login flow at a free Netlify "auth-only" site
+  # (it doesn't host any real content, just handles the OAuth handshake).
+  base_url: https://testtesttesttestls.netlify.app
   auth_endpoint: auth
 
 publish_mode: simple
