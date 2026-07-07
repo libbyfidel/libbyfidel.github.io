@@ -14,7 +14,7 @@
     .wrap { max-width: 640px; padding: 2rem; width: 100%; }
     h1 { font-size: 28px; font-weight: 600; margin-bottom: 0.5rem; }
     p.sub { color: #4a6040; margin-bottom: 2.5rem; }
-    .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem; }
     a.card {
       display: block; padding: 1.75rem; background: white; border-radius: 10px;
       text-decoration: none; color: inherit; border: 1px solid rgba(120,160,90,0.25);
@@ -41,6 +41,11 @@
         <span class="icon">🧱</span>
         <h2>Page Builder</h2>
         <p>Drag-and-drop editor for adding new tabs/pages — containers, images, galleries, buttons — no code.</p>
+      </a>
+      <a class="card" href="calendar/">
+        <span class="icon">📅</span>
+        <h2>Content Calendar</h2>
+        <p>See published, scheduled, and draft posts on a monthly calendar. Drag to reschedule, click to read the full post.</p>
       </a>
     </div>
   </div>
